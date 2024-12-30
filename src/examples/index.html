@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Monitor Demo</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script>
+        // 阻塞主线程
+        const startTime = Date.now();
+        while (Date.now() - startTime < 3000) {}
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="../../dist/index.umd.js"></script>
+</head>
+<body>
+    <h1>Performance Monitor Test</h1>
+    <button id="testBtn">Test Track</button>
+
+    <script>
+        window.onload = function() {
+            console.log('准备执行监控==== ');
+
+            const monitor = new PerformanceMonitor({
+                reportUrl: 'https://mock.com',
+                appId: 'test-app',
+                enablePerformance: true,
+                enableError: true
+            });
+
+            document.getElementById('testBtn').onclick = () => {
+                console.log('按钮点击埋点发送 ======> **********');
+                monitor.report('button_click', {
+                    buttonId: 'testBtn',
+                    timestamp: Date.now()
+                });
+            };
+        }
+    </script>
+</body>
+</html>
