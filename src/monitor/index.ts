@@ -1,8 +1,8 @@
 import { MonitorConfig, PerformanceMetrics, RouteChangeMetrics } from "./types";
 import { MonitorType } from "./enum";
 
-export default class PerformanceMonitor {
-  private static instance: PerformanceMonitor;
+export default class BXMonitor {
+  private static instance: BXMonitor;
   private config!: MonitorConfig;
 
   constructor(config: MonitorConfig) {
@@ -12,8 +12,8 @@ export default class PerformanceMonitor {
     }
 
     // 单例
-    if (PerformanceMonitor.instance) {
-      return PerformanceMonitor.instance;
+    if (BXMonitor.instance) {
+      return BXMonitor.instance;
     }
 
     this.config = {
@@ -22,7 +22,7 @@ export default class PerformanceMonitor {
     };
 
     this.init();
-    PerformanceMonitor.instance = this;
+    BXMonitor.instance = this;
   }
 
   private getDefaultConfig(): Partial<MonitorConfig> {
@@ -38,7 +38,6 @@ export default class PerformanceMonitor {
   private init() {
     this.collectPerformanceMetrics();
     this.setupErrorListener();
-    console.log('PerformanceMonitor initialized');
   }
 
   // 收集性能指标
@@ -166,7 +165,7 @@ export default class PerformanceMonitor {
   }
 
   // 数据上报
-  private async report(type: MonitorType, data: MonitorConfig | PerformanceMetrics | RouteChangeMetrics) {
+  public async report(type: MonitorType, data: MonitorConfig | PerformanceMetrics | RouteChangeMetrics) {
     // 上报类型不存在
     if (!Object.values(MonitorType).includes(type)) {
       console.error('上报类型不存在');

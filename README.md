@@ -1,4 +1,4 @@
-# Performance Monitor Plugin
+# BXMonitor Plugin
 
 一个轻量级的前端性能监控插件，支持 SPA 应用。
 
@@ -19,10 +19,10 @@ yarn add bx-monitor
 ## 使用
 
 ```javascript
-import { PerformanceMonitor } from 'performance-monitor';
+import { BXMonitor } from 'performance-monitor';
 
 // 初始化监控
-const monitor = new PerformanceMonitor({
+const monitor = new BXMonitor({
   reportUrl: 'your-api-endpoint',  // 数据上报地址（必填）
   appId: 'your-app-id',           // 应用标识
   enablePerformance: true,        // 是否启用性能监控

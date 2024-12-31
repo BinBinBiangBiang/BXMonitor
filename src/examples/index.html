@@ -21,7 +21,7 @@
         window.onload = function() {
             console.log('准备执行监控==== ');
 
-            const monitor = new PerformanceMonitor({
+            const monitor = new BXMonitor({
                 reportUrl: 'https://mock.com',
                 appId: 'test-app',
                 enablePerformance: true,
@@ -30,7 +30,7 @@
 
             document.getElementById('testBtn').onclick = () => {
                 console.log('按钮点击埋点发送 ======> **********');
-                monitor.report('button_click', {
+                monitor.report('click', {
                     buttonId: 'testBtn',
                     timestamp: Date.now()
                 });
