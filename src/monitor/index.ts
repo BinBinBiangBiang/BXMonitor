@@ -1,11 +1,11 @@
-import { MonitorConfig, PerformanceMetrics, RouteChangeMetrics } from "./types";
+import { IMonitorConfig, PerformanceMetrics, RouteChangeMetrics, IClickConfig, IErrorConfig, IPromiseErrorConfig, ICommonConfig, IModuleExposeConfig } from "./types";
 import { MonitorType } from "./enum";
 
 export default class BXMonitor {
   private static instance: BXMonitor;
-  private config!: MonitorConfig;
+  private config!: IMonitorConfig;
 
-  constructor(config: MonitorConfig) {
+  constructor(config: IMonitorConfig) {
     // 检查必要的配置
     if (!config.reportUrl) {
       throw new Error('reportUrl is required');
@@ -25,7 +25,7 @@ export default class BXMonitor {
     BXMonitor.instance = this;
   }
 
-  private getDefaultConfig(): Partial<MonitorConfig> {
+  private getDefaultConfig(): Partial<IMonitorConfig> {
     return {
       enablePerformance: true,  // 是否开启性能监控
       enableError: true,  // 是否开启错误监控
@@ -78,7 +78,7 @@ export default class BXMonitor {
 
           if (metrics) {
             console.log('Initial metrics====== ', metrics);
-            this.report(MonitorType.performance, metrics);
+            this.report(MonitorType.PERFORMANCE, metrics);
             performance.clearResourceTimings();
           }
         }, 0);
@@ -110,7 +110,7 @@ export default class BXMonitor {
             };
 
             console.log('Route change metrics====== ', metrics);
-            this.report(MonitorType.performance, metrics);
+            this.report(MonitorType.PERFORMANCE, metrics);
             performance.clearResourceTimings();
           }, 0);
         };
@@ -145,7 +145,7 @@ export default class BXMonitor {
   // 错误监控
   private setupErrorListener() {
     window.addEventListener('error', (event) => {
-      this.report(MonitorType.error, {
+      this.report(MonitorType.ERROR, {
         ...this.config,
         message: event.message,
         fileName: event.filename,
@@ -156,7 +156,7 @@ export default class BXMonitor {
     });
 
     window.addEventListener('unhandledrejection', (event) => {
-      this.report(MonitorType.promiseError, {
+      this.report(MonitorType.PROMISE_ERROR, {
         ...this.config,
         message: event.reason?.message || event.reason,
         stack: event.reason?.stack
@@ -165,7 +165,7 @@ export default class BXMonitor {
   }
 
   // 数据上报
-  public async report(type: MonitorType, data: MonitorConfig | PerformanceMetrics | RouteChangeMetrics) {
+  private async report(type: MonitorType, data: IMonitorConfig | PerformanceMetrics | RouteChangeMetrics) {
     // 上报类型不存在
     if (!Object.values(MonitorType).includes(type)) {
       console.error('上报类型不存在');
@@ -236,5 +236,30 @@ export default class BXMonitor {
     } catch (error) {
       console.error('Failed to report after retries:', error);
     }
+  }
+
+  // 埋点点击上报
+  public clickReport(data: IClickConfig, beforeReport?: (data: any) => any) {
+    this.report(MonitorType.CLICK, this.config.beforeReport ? this.config.beforeReport(data) : data);
+  }
+
+  // 埋点错误上报
+  public errorReport(data: IErrorConfig, beforeReport?: (data: any) => any) {
+    this.report(MonitorType.ERROR, this.config.beforeReport ? this.config.beforeReport(data) : data);
+  }
+
+  // 页面埋点曝光上报
+  public pageView(data: ICommonConfig, beforeReport?: (data: any) => any) {
+    this.report(MonitorType.PAGE_VIEW, this.config.beforeReport ? this.config.beforeReport(data) : data);
+  }
+
+  // 页面埋点离开上报
+  public pageViewOut(data: ICommonConfig, beforeReport?: (data: any) => any) {
+    this.report(MonitorType.PAGE_VIEW_OUT, this.config.beforeReport ? this.config.beforeReport(data) : data);
+  }
+
+  // 模块埋点曝光上报
+  public moduleExpose(data: IModuleExposeConfig, beforeReport?: (data: any) => any) {
+    this.report(MonitorType.MODULE_EXPOSE, this.config.beforeReport ? this.config.beforeReport(data) : data);
   }
 } 
