@@ -144,6 +144,7 @@ export default class BXMonitor {
 
   // 错误监控
   private setupErrorListener() {
+    // 普通错误监控
     window.addEventListener('error', (event) => {
       this.report(MonitorType.ERROR, {
         ...this.config,
@@ -155,6 +156,7 @@ export default class BXMonitor {
       });
     });
 
+    // Promise错误监控
     window.addEventListener('unhandledrejection', (event) => {
       this.report(MonitorType.PROMISE_ERROR, {
         ...this.config,
@@ -162,6 +164,17 @@ export default class BXMonitor {
         stack: event.reason?.stack
       });
     });
+
+    // 资源加载错误监控
+    window.addEventListener('error', (event) => {
+      if (event.target && (event.target as HTMLElement).tagName) {
+        this.report(MonitorType.RESOURCE_ERROR, {
+          ...this.config,
+          tagName: (event.target as HTMLElement).tagName,
+          src: (event.target as HTMLImageElement).src || (event.target as HTMLLinkElement).href,
+        });
+      }
+    }, true);
   }
 
   // 数据上报

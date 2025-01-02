@@ -5,5 +5,6 @@ export enum MonitorType {
   PAGE_VIEW = 'pageView', // 页面曝光埋点
   PAGE_VIEW_OUT = 'pageViewOut', // 页面离开埋点
   MODULE_EXPOSE = 'moduleExpose', // 模块曝光埋点
-  PROMISE_ERROR = 'promise_error' // promise 错误监控
+  PROMISE_ERROR = 'promise_error', // promise 错误监控
+  RESOURCE_ERROR = 'resource_error' // 资源加载错误监控
 }

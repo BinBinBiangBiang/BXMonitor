@@ -14,6 +14,8 @@ export interface IMonitorConfig {
   onError?: (error: any) => void;    // 上报失败的回调
   // 错误监控
   message?: string;           // 自定义消息
+  tagName?: string;           // 标签名称(处理资源加载错误)
+  src?: string;               // 资源地址(处理资源加载错误)
   fileName?: string;          // 文件名
   lineNo?: number;        // 行号
   colNo?: number;          // 列号
